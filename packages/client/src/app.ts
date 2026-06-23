@@ -684,6 +684,8 @@ export default class App {
     private selectServer(server: SerializedServer): void {
         this.selectedServer = server;
 
+        if (!this.worldSelectButton) return;
+
         let name = this.worldSelectButton.querySelector('strong')!;
         name.textContent = `${server.name} ${server.id}`;
 
@@ -752,7 +754,7 @@ export default class App {
         // If there is only one server, then hide the world select button
         if (servers.length < 2) return;
 
-        this.worldSelectButton.hidden = false;
+        if (this.worldSelectButton) this.worldSelectButton.hidden = false;
 
         for (let i in servers) {
             let server = servers[i],
