@@ -491,7 +491,10 @@ export default class MongoDB {
      */
 
     private hasDatabase(): boolean {
-        if (!this.database) log.error('No connection established for the database.');
+        if (!this.database) {
+            log.error('No connection established for the database.');
+            console.trace('Who is calling DB without connection?');
+        }
 
         return !!this.database;
     }

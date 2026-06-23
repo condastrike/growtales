@@ -1,5 +1,5 @@
 ---
-import { t, getLanguage } from '@kaetram/common/i18n';
+import { t, getLanguage } from '@Grow Tales/common/i18n';
 
 let currentLanguage = getLanguage(),
     languages = [
@@ -17,66 +17,34 @@ let currentLanguage = getLanguage(),
 <div id="intro">
     <section id="parchment" class="load-character slice-menu-fancy">
         <article id="load-character">
-            <h1 class="title-decoration">{t('game:NAME')}</h1>
+            <h1 class="title-decoration">Grow Tales</h1>
 
             <form onsubmit={'return false'}>
-                <input
-                    type="text"
-                    id="login-name-input"
-                    class="stroke slice-input"
-                    name="player-name"
-                    placeholder="Username"
-                    aria-label="Username"
-                    maxlength="32"
-                    autocomplete="off"
-                />
-                <input
-                    type="password"
-                    id="login-password-input"
-                    class="stroke slice-input"
-                    name="player-password"
-                    placeholder="Password"
-                    aria-label="Password"
-                    maxlength="64"
-                    autocomplete="off"
-                />
+                <input type="hidden" id="login-name-input" class="stroke slice-input" name="player-name" value="" />
+                <input type="hidden" id="login-password-input" class="stroke slice-input" name="player-password" value="" />
 
                 <div class="validation-summary"></div>
 
-                <div class="button-row">
-                    <label id="remember-me" class="check">
-                        <input type="checkbox" aria-labelledby="remember-me-text" />
-                        <span class="checkmark"></span>
-
-                        <span id="remember-me-text">Remember Me</span>
-                    </label>
-                    <label id="guest" class="check">
-                        <input type="checkbox" aria-labelledby="guest-text" />
-                        <span class="checkmark"></span>
-
-                        <span id="guest-text">Play as a guest</span>
-                    </label>
-                </div>
-
-                <div class="button-row">
+                <div class="button-row" style="justify-content: center; margin-top: 10px;">
+                    <button
+                        title="Play"
+                        aria-label="Play"
+                        type="button"
+                        id="play-button"
+                        class="stroke slice-button"
+                    >
+                        PLAY
+                    </button>
+                    <!-- Keep the actual submit button hidden, we will trigger it programmatically or repurpose it -->
                     <button
                         title="Login"
                         aria-label="Login"
                         type="submit"
                         id="login"
                         class="stroke slice-button"
-                        disabled
+                        style="display: none;"
                     >
                         LOGIN
-                    </button>
-                    <button
-                        title="New Account"
-                        aria-label="New Account"
-                        type="button"
-                        id="new-account"
-                        class="stroke slice-button"
-                    >
-                        NEW ACCOUNT
                     </button>
                 </div>
             </form>
@@ -153,11 +121,7 @@ let currentLanguage = getLanguage(),
         </article>
 
         <article id="reset-password">
-            <h1>
-                <span class="left-ornament"></span>
-                 Reset Password
-                <span class="right-ornament"></span>
-            </h1>
+            <h1 class="title-decoration">Reset Password</h1>
 
             <form onsubmit={'return false'}>
                 <input
@@ -311,14 +275,14 @@ let currentLanguage = getLanguage(),
             <h1 class="title-decoration">About</h1>
 
             <p>
-                Kaetram is a browser-based 2D MMORPG adventure. You play as an adventurer amongst
-                others and explore the world of Kaetram. Originally started as a fork of
-                BrowserQuest, Kaetram has evolved into its own game. In honour to the original idea,
+                Grow Tales is a browser-based 2D MMORPG adventure. You play as an adventurer amongst
+                others and explore the world of Grow Tales. Originally started as a fork of
+                BrowserQuest, Grow Tales has evolved into its own game. In honour to the original idea,
                 the assets have been preserved and expanded upon. We are one of a few open-source
                 community driven game projects. We are always looking for assistance in terms of
                 programming, graphic artists, and/or music composers. Our source-code can be found
                 on our
-                <a target="_blank" href="https://github.com/Kaetram/Kaetram-Open"
+                <a target="_blank" href="https://github.com/Grow Tales/Grow Tales-Open"
                     >GitHub Repository</a
                 >. If you would like to stay up-to-date with the project, make sure you join our
                 <a target="_blank" href="https://discord.gg/MmbGAaw">Discord server</a>.
@@ -366,39 +330,10 @@ let currentLanguage = getLanguage(),
 
     <span id="game-version" class="version"></span>
 
-    <footer>
-        <div id="about-link" class="clickable">
-            <span id="toggle-about">About</span>
-        </div>
-        <span>&ndash;</span>
-        <div id="credits-link" class="clickable">
-            <span id="toggle-credits">Credits</span>
-        </div>
-        <span>&ndash;</span>
-        <div id="discord-link" class="clickable">
-            <a class="footer-button" target="_blank" href="https://discord.gg/MmbGAaw">
-                <span>Discord</span>
-            </a>
-        </div>
-        <span>&ndash;</span>
-        <div class="clickable">
-            <a
-                class="footer-button"
-                target="_blank"
-                href="https://www.patreon.com/bePatron?u=29287394"
-            >
-                <span>Patreon</span>
-            </a>
-        </div>
-        <span>&ndash;</span>
-        <div id="privacy" class="clickable">
-            <a class="footer-button" href="/privacy/">
-                <span>Privacy</span>
-            </a>
-        </div>
-        <span>&ndash;</span>
-        <div id="reset" class="clickable">
-            <span id="toggle-reset-password">Reset Password</span>
-        </div>
-    </footer>
+    <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" id="twitter-button" class="slice-button stroke" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); text-decoration: none; padding: 10px 20px; background-color: #1DA1F2; color: white; display: flex; align-items: center; justify-content: center; border-radius: 5px; gap: 8px; font-size: 14px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+        </svg>
+        Twitter
+    </a>
 </div>

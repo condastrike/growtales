@@ -3,6 +3,7 @@ import Storage from './utils/storage';
 import Util from './utils/util';
 import { isMobile } from './utils/detect';
 import { onSecondaryPress } from './utils/press';
+import { BrowserProvider } from 'ethers';
 
 import type { SerializedServer } from '@kaetram/common/types/network';
 
@@ -37,29 +38,31 @@ export default class App {
     )!;
     private emailField: HTMLInputElement = document.querySelector('#register-email-input')!;
 
-    private loginButton: HTMLButtonElement = document.querySelector('#login')!;
-    private registerButton: HTMLButtonElement = document.querySelector('#new-account')!;
-    private cancelRegister: HTMLButtonElement = document.querySelector('#cancel-register')!;
-    private cancelWorlds: HTMLButtonElement = document.querySelector('#cancel-worlds')!;
-    private cancelForget: HTMLButtonElement = document.querySelector('#cancel-forget')!;
-    private continueWorlds: HTMLButtonElement = document.querySelector('#continue-worlds')!;
-    private continueForget: HTMLButtonElement = document.querySelector('#continue-forget')!;
+    private loginButton: HTMLButtonElement | null = document.querySelector('#login');
+    private playButton: HTMLButtonElement | null = document.querySelector('#play-button');
+    private registerButton: HTMLButtonElement | null = document.querySelector('#new-account');
+    private cancelRegister: HTMLButtonElement | null = document.querySelector('#cancel-register');
+    private cancelWorlds: HTMLButtonElement | null = document.querySelector('#cancel-worlds');
+    private cancelForget: HTMLButtonElement | null = document.querySelector('#cancel-forget');
+    private continueWorlds: HTMLButtonElement | null = document.querySelector('#continue-worlds');
+    private continueForget: HTMLButtonElement | null = document.querySelector('#continue-forget');
 
     private respawn: HTMLButtonElement = document.querySelector('#respawn')!;
 
-    private emailResetInput: HTMLInputElement = document.querySelector('#email-reset-input')!;
-    private rememberMe: HTMLInputElement = document.querySelector('#remember-me input')!;
-    private guest: HTMLInputElement = document.querySelector('#guest input')!;
+    private emailResetInput: HTMLInputElement | null = document.querySelector('#email-reset-input');
+    private rememberMe: HTMLInputElement | null = document.querySelector('#remember-me input');
+    private guest: HTMLInputElement | null = document.querySelector('#guest input');
 
-    private about: HTMLElement = document.querySelector('#toggle-about')!;
-    private credits: HTMLElement = document.querySelector('#toggle-credits')!;
-    private resetPassword: HTMLElement = document.querySelector('#toggle-reset-password')!;
+    private about: HTMLElement | null = document.querySelector('#toggle-about');
+    private credits: HTMLElement | null = document.querySelector('#toggle-credits');
+    private resetPassword: HTMLElement | null = document.querySelector('#toggle-reset-password');
 
     private validation: NodeListOf<HTMLElement> = document.querySelectorAll('.validation-summary')!;
     private loading: HTMLElement = document.querySelector('.loader')!;
-    private langSelect: HTMLElement = document.querySelector('#lang-select')!;
-    private worldSelectButton: HTMLElement = document.querySelector('#world-select-button')!;
-    private gameVersion: HTMLElement = document.querySelector('#game-version')!;
+    private langSelect: HTMLElement | null = document.querySelector('#lang-select');
+    private worldSelectButton: HTMLElement | null = document.querySelector('#world-select-button');
+    private gameVersion: HTMLElement | null = document.querySelector('#game-version');
+    private twitterButton: HTMLElement | null = document.querySelector('#twitter-button');
 
     private currentScroll = 'load-character';
     private loggingIn = false; // Used to prevent interactions when trying to log in.
@@ -104,28 +107,32 @@ export default class App {
         this.loginForm.addEventListener('submit', this.login.bind(this));
         this.registerForm.addEventListener('submit', this.login.bind(this));
 
-        this.registerButton.addEventListener('click', () => this.openScroll('create-character'));
-        this.cancelRegister.addEventListener('click', () => this.openScroll('load-character'));
-        this.cancelForget.addEventListener('click', () => this.openScroll('load-character'));
+        if (this.playButton) {
+            this.playButton.addEventListener('click', this.login.bind(this));
+        }
 
-        this.cancelWorlds.addEventListener('click', () => this.openScroll('load-character'));
-        this.continueWorlds.addEventListener('click', () => this.openScroll('load-character'));
-        this.continueForget.addEventListener('click', () => this.forgotPassword());
+        this.registerButton?.addEventListener('click', () => this.openScroll('create-character'));
+        this.cancelRegister?.addEventListener('click', () => this.openScroll('load-character'));
+        this.cancelForget?.addEventListener('click', () => this.openScroll('load-character'));
 
-        this.about.addEventListener('click', () => this.openScroll('about'));
-        this.credits.addEventListener('click', () => this.openScroll('credits'));
-        this.resetPassword.addEventListener('click', () => this.openScroll('reset-password'));
+        this.cancelWorlds?.addEventListener('click', () => this.openScroll('load-character'));
+        this.continueWorlds?.addEventListener('click', () => this.openScroll('load-character'));
+        this.continueForget?.addEventListener('click', () => this.forgotPassword());
 
-        this.respawn.addEventListener('click', () => this.respawnCallback?.());
+        this.about?.addEventListener('click', () => this.openScroll('about'));
+        this.credits?.addEventListener('click', () => this.openScroll('credits'));
+        this.resetPassword?.addEventListener('click', () => this.openScroll('reset-password'));
 
-        this.parchment.addEventListener('click', () => {
+        this.respawn?.addEventListener('click', () => this.respawnCallback?.());
+
+        this.parchment?.addEventListener('click', () => {
             if (this.hasFooterOpen()) this.openScroll('load-character');
             if (this.body.classList.contains('news')) this.body.classList.remove('news');
         });
 
-        this.worldSelectButton.addEventListener('click', () => this.openScroll('world-select'));
+        this.worldSelectButton?.addEventListener('click', () => this.openScroll('world-select'));
 
-        this.gameVersion.textContent = `${this.config.version}${this.config.minor}`;
+        if (this.gameVersion) this.gameVersion.textContent = `${this.config.version}${this.config.minor}`;
 
         // Document callbacks such as clicks and keystrokes.
         document.addEventListener('keydown', (e: KeyboardEvent) => e.key !== 'Enter');
@@ -173,7 +180,7 @@ export default class App {
         this.getPasswordField().value = this.storage.getPassword();
 
         // Set the checkmark for remember me to true.
-        this.rememberMe.checked = true;
+        if (this.rememberMe) this.rememberMe.checked = true;
     }
 
     /**
@@ -203,7 +210,7 @@ export default class App {
 
         this.sendStatus();
 
-        this.loginButton.disabled = false;
+        if (this.loginButton) this.loginButton.disabled = false;
 
         this.loadLogin();
         this.loadWorlds();
@@ -215,23 +222,25 @@ export default class App {
             );
     }
 
-    /**
-     * Attempts to log in by checking all the necessary fields and creating
-     * a callback should all checks pass.
-     */
-
     private login(): void {
-        if (this.loggingIn || this.statusMessage || !this.verifyForm()) return;
+        console.log("login() called. Status:", { loggingIn: this.loggingIn, statusMsg: this.statusMessage });
+        if (this.loggingIn || this.statusMessage || !this.verifyForm()) {
+            console.log("login() blocked by:", { loggingIn: this.loggingIn, statusMsg: this.statusMessage, formValid: this.verifyForm() });
+            return;
+        }
 
         this.clearErrors();
         this.toggleLogin(true);
 
+        console.log("Calling loginCallback...");
         // Creates a callback with all the fields.
         this.loginCallback?.(this.selectedServer);
 
         // Installs the PWA.
         install();
     }
+
+
 
     /**
      * Checks if the remember me checkbox is toggled and
@@ -264,9 +273,10 @@ export default class App {
         this.body.className = 'intro';
 
         this.menuHidden = false;
-        this.langSelect.hidden = false;
-        this.worldSelectButton.hidden = false;
-        this.gameVersion.hidden = false;
+        if (this.langSelect) this.langSelect.hidden = false;
+        if (this.worldSelectButton) this.worldSelectButton.hidden = false;
+        if (this.gameVersion) this.gameVersion.hidden = false;
+        if (this.twitterButton) this.twitterButton.style.display = 'flex';
     }
 
     /**
@@ -280,9 +290,10 @@ export default class App {
         this.body.className = 'game';
 
         this.menuHidden = true;
-        this.langSelect.hidden = true;
-        this.worldSelectButton.hidden = true;
-        this.gameVersion.hidden = true;
+        if (this.langSelect) this.langSelect.hidden = true;
+        if (this.worldSelectButton) this.worldSelectButton.hidden = true;
+        if (this.gameVersion) this.gameVersion.hidden = true;
+        if (this.twitterButton) this.twitterButton.style.display = 'none';
 
         this.updateLoader();
         this.saveLogin();
@@ -481,8 +492,8 @@ export default class App {
 
         this.loggingIn = toggle;
 
-        this.loginButton.disabled = toggle;
-        this.registerButton.disabled = toggle;
+        if (this.loginButton) this.loginButton.disabled = toggle;
+        if (this.registerButton) this.registerButton.disabled = toggle;
 
         document.querySelector(`#${this.currentScroll} .validation-summary`)?.append(this.loading);
         this.loading.hidden = !toggle;
@@ -514,11 +525,11 @@ export default class App {
     }
 
     /**
-     * @returns Whether or not the guest toggle is checked.
+     * @returns True if the guest option is toggled, false otherwise.
      */
 
     public isGuest(): boolean {
-        return this.guest.checked;
+        return true;
     }
 
     /**
@@ -527,7 +538,7 @@ export default class App {
      */
 
     public isRememberMe(): boolean {
-        return this.rememberMe.checked;
+        return this.rememberMe?.checked ?? false;
     }
 
     /**
@@ -690,7 +701,7 @@ export default class App {
             return this.setValidation('validation-error', 'No hub is configured.');
 
         // Grab the input field value for the email address.
-        let email = this.emailResetInput.value;
+        let email = this.emailResetInput?.value;
 
         // Validate the input email.
         if (!email || !Util.isEmail(email))

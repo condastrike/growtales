@@ -317,7 +317,7 @@ export default class Player extends Character {
      */
 
     public async loadQuests(): Promise<void> {
-        this.quests.load(await this.database.loader?.loadQuests(this));
+        this.quests.load((await this.database.loader?.loadQuests(this)) || []);
     }
 
     /**
@@ -325,7 +325,7 @@ export default class Player extends Character {
      */
 
     public async loadAchievements(): Promise<void> {
-        this.achievements.load(await this.database.loader?.loadAchievements(this));
+        this.achievements.load((await this.database.loader?.loadAchievements(this)) || []);
     }
 
     /**

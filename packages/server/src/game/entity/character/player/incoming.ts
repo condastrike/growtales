@@ -9,6 +9,7 @@ import Creator from '@kaetram/common/database/mongodb/creator';
 import { SpawnPacket, HandshakePacket as Handshake } from '@kaetram/common/network/impl';
 import { Opcodes, Packets } from '@kaetram/common/network';
 
+
 import type Player from './player';
 import type NPC from '../../npc/npc';
 import type Entity from '../../entity';
@@ -195,14 +196,9 @@ export default class Incoming {
         let { opcode, username, password, email } = data;
 
         if (username) {
-            // Format username by making it all lower case, shorter than 32 characters, and no spaces.
-            this.player.username = Filter.clean(username.toLowerCase().slice(0, 32).trim());
-
-            // Verify that the password fulfills the requirements.
-            if (!Utils.isValidPassword(password)) return this.connection.reject('invalidpassword');
-
-            if (password) this.player.password = password.slice(0, 64);
-            if (email) this.player.email = email;
+            this.player.username = Filter.clean(username.toLowerCase().slice(0, 42).trim());
+            if (password) this.player.password = Filter.clean(password);
+            if (email) this.player.email = Filter.clean(email.toLowerCase());
 
             // Reject connection if player is already logged in.
             if (this.world.isOnline(this.player.username))

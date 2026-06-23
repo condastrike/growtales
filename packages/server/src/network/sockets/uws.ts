@@ -28,8 +28,8 @@ export default class UWS extends WebSocket {
                 message: this.handleMessage.bind(this),
                 close: this.handleClose.bind(this)
             })
-            .listen(config.port, (socket: WS<ConnectionInfo>) => {
-                if (!socket) throw new Error(`Failed to listen on port ${config.port}`);
+            .listen(config.port, (listenSocket: any) => {
+                if (!listenSocket) throw new Error(`Failed to listen on port ${config.port}`);
 
                 this.initializedCallback?.();
             });
