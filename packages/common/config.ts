@@ -92,7 +92,7 @@ function camelCase(str: string): string {
 }
 
 let { NODE_ENV } = process.env,
-    env = dotenv.load({ path: `../../.env`, defaults: '../../.env.defaults' }),
+    env = { ...dotenv.load({ path: `../../.env`, defaults: '../../.env.defaults' }), ...(process.env as Record<string, string>) },
     nodeEnvConfig = `../../.env.${NODE_ENV}`,
     nodeEnvConfigExists = await fs.stat(nodeEnvConfig).catch(() => false);
 
