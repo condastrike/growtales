@@ -146,10 +146,6 @@ export default class Socket {
 
         this.game.app.toggleLogin(false);
 
-        this.game.app.sendError(
-            import.meta.env.DEV
-                ? `Couldn't connect to ${host}:${port}`
-                : 'Could not connect to the game server.'
-        );
+        this.game.app.sendError(`Could not connect to: ${host}`);
     }
 }

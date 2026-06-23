@@ -686,11 +686,11 @@ export default class App {
 
         if (!this.worldSelectButton) return;
 
-        let name = this.worldSelectButton.querySelector('strong')!;
-        name.textContent = `${server.name} ${server.id}`;
+        let name = this.worldSelectButton.querySelector('strong');
+        if (name) name.textContent = `${server.name} ${server.id}`;
 
-        let players = this.worldSelectButton.querySelector('span')!;
-        players.textContent = `(${server.players}/${server.maxPlayers} players)`;
+        let players = this.worldSelectButton.querySelector('span');
+        if (players) players.textContent = `(${server.players}/${server.maxPlayers} players)`;
     }
 
     /**
